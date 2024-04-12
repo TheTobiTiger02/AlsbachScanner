@@ -15,8 +15,13 @@ discordClient.on('message', message => {
     
     if (message.channel.id === process.env.discordChannelId) {
       // Redirect the message to another channel
+      try{
+        telegramBot.sendMessage(process.env.telegramChannelId, message.content);
+      }
+      catch(error){
+        console.log(error.message);
+      }
       
-      telegramBot.sendMessage(process.env.telegramChannelId, message.content);
       
     }
   });
