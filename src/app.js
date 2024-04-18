@@ -252,7 +252,7 @@ discordClient.on('messageCreate', async message => {
     return;
   }
   try{
-    sendMessage(process.env.telegramTestId, message);
+    sendMessage(telegramChatId, message);
   }
   catch(error){
     console.error("Could not send messages");
