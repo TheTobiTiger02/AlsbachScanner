@@ -19,14 +19,14 @@ discordClient.on('ready', async () => {
   console.log(`${discordClient.user.username} is ready!`);
 
   /*const channelId = '1228077883243630654';
-  //const messageId = '1230563588989652993'; // PvP
+  const messageId = '1230969067695767734'; // PvP
   //const messageId = '1230458800155262997' // Raid
   //const messageId = '1230484717573505064' // 0%
   //const messageId = '1230328806120886375' // Rocket
   //const messageId = '1230953276921610320' // Random
   //const messageId = '1230627297539657828' // Empty
   //const messageId = '1230488059485622343' // WeatherChange
-  const messageId = '1230961140914323628' // Hundo
+  //const messageId = '1230961140914323628' // Hundo
 
   // Fetch the channel
   const channel = discordClient.channels.cache.get(channelId);
@@ -37,15 +37,16 @@ discordClient.on('ready', async () => {
       //telegramBot.sendMessage("449626954", message.embeds[0].title + '\n\n' + message.embeds[0].description.split('Despawn')[0].replaceAll('**', '') + '\n' + message.embeds[0].fields[1].value.split('<')[0])
       //telegramBot.sendMessage("449626954", message.embeds[0].description);
       //console.log(message.embeds[0].title);
-      //console.log(message.embeds[0])
+      console.log(message.embeds[0])
       sendMessage("449626954", message)
       
     })
     .catch(error => {
       console.error('Error fetching message:', error);
     });
-
     */
+
+    
     
     
     
@@ -58,13 +59,13 @@ async function sendMessage(telegramChatId, message) {
   let messageToSend = "";
   try{
   messageToSend = "*" + message.embeds[0].title + "*\n";
-  messageToSend += message.embeds[0].description;
+  messageToSend += message.embeds[0].description + "\n\n";
   messageToSend = messageToSend.split("<:gmaps")[0];
   
     //messageToSend = messageToSend.replace(/<:TeamHarmony:\d+>/, '');
     messageToSend = messageToSend.replace(/<:[^>]+:\d+>/g, 'Team');
     messageToSend = messageToSend.replace("Team", "");
-    messageToSend = messageToSend.replace(/Despawn <t:\d+:R>/, "\n");
+    messageToSend = messageToSend.replace(/Despawn <t:\d+:R>/, "");
 
 
     
