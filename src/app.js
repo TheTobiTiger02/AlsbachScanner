@@ -15,13 +15,14 @@ discordClient.on('ready', async () => {
 
   console.log(`${discordClient.user.username} is ready!`);
 
-  /*const channelId = '1228077883243630654';
+  const channelId = '1228077883243630654';
   //const messageId = '1230563588989652993'; // PvP
   //const messageId = '1230458800155262997' // Raid
   //const messageId = '1230484717573505064' // 0%
   //const messageId = '1230328806120886375' // Rocket
   //const messageId = '1230627579942408212' // Random
-  const messageId = '1230627297539657828' // Empty
+  //const messageId = '1230627297539657828' // Empty
+  const messageId = '1230488059485622343' // WeatherChange
 
   // Fetch the channel
   const channel = discordClient.channels.cache.get(channelId);
@@ -39,7 +40,7 @@ discordClient.on('ready', async () => {
     .catch(error => {
       console.error('Error fetching message:', error);
     });
-    */
+    
     
 
 
@@ -96,11 +97,28 @@ async function sendMessage(telegramChatId, message) {
     latitude = parseFloat(coordinates[1]);
   }
   catch(error){
-
+    console.log("Test2");
   }
   
-
-  try {
+  try{
+    await telegramBot.sendPhoto(telegramChatId, message.embeds[0].image.url)
+  }
+  catch(error){
+    console.error("Coul not send photo");
+  }
+  try{
+    await telegramBot.sendMessage(telegramChatId, messageToSend, silentOptions)
+  }
+  catch(error){
+    console.error("Coul not send message");
+  }
+  try{
+    await telegramBot.sendLocation(telegramChatId, longitude, latitude, silentOptions)
+  }
+  catch(error){
+    console.error("Coul not send location");
+  }
+  /*try {
     telegramBot.sendPhoto(telegramChatId, message.embeds[0].image.url)
       .then(() => telegramBot.sendMessage(telegramChatId, messageToSend, silentOptions))
       .then(() => telegramBot.sendLocation(telegramChatId, longitude, latitude, silentOptions))
@@ -114,75 +132,12 @@ async function sendMessage(telegramChatId, message) {
   catch (error) {
 
   }
+  */
 }
 
-async function sendPokemonMessage(telegramChatId, message) {
-  let longitude, latitude;
-  try {
-    const coordinates = await getCoordinates(getGoogleMapsLink(message));
-    longitude = parseFloat(coordinates[0]);
-    latitude = parseFloat(coordinates[1]);
-  }
-  catch (error) {
-
-  }
-
-  try {
-
-    
-
-    telegramBot.sendPhoto(telegramChatId, message.embeds[0].thumbnail.url, silentOptions)
-      .then(() => telegramBot.sendMessage(telegramChatId, message.embeds[0].title + '\n\n' + message.embeds[0].description.split('Despawn')[0].replaceAll('**', '') + '\n' + message.embeds[0].fields[1].value.split('<')[0]), silentOptions)
-      .then(() => telegramBot.sendLocation(telegramChatId, longitude, latitude), silentOptions)
-      .then(() => {
-        //console.log('All messages sent successfully.');
-      })
-      .catch(error => {
-        console.error('Error sending messages:', error);
-      });
-  }
-  catch (error) {
-
-  }
-}
-
-async function sendRaidMessage(telegramChatId, message) {
-
-  const title = message.embeds[0].title;
-  const gym = "Gym: " + message.embeds[0].description.split("**Gym:**")[1].split("\n")[0];
-  const endTime = "Raid ends at: " + message.embeds[0].description.split("**Raid ends at**:")[1].split("\n")[0];
-  const gymColor = "Team: " + message.embeds[0].description.split("poracle")[1].split("> ")[1].split(" ")[0];
-  const fastAttack = "Fast attack: " + message.embeds[0].description.split("Fast attack:**")[1].split("\n")[0];
-  const chargeAttack = "Charge attack: " + message.embeds[0].description.split("Charge attack:**")[1].split("\n")[0];
-  const maxCp = "Max. CP: " + message.embeds[0].description.split("Max. CP ")[1].split("\n")[0].replaceAll("**", "");
-
-
-  let messageToSend = title + "\n" + gym + "\n" + endTime + "\n" + gymColor + "\n" + fastAttack + "\n" + chargeAttack + "\n" + maxCp;
-
-
-  let longitude, latitude;
-
-  const coordinates = message.embeds[0].description.split("[Google](")[1].split("q=")[1].split(")")[0].split(",");
-  longitude = parseFloat(coordinates[0]);
-  latitude = parseFloat(coordinates[1]);
 
 
 
-  try {
-    telegramBot.sendPhoto(telegramChatId, message.embeds[0].thumbnail.url)
-      .then(() => telegramBot.sendMessage(telegramChatId, messageToSend, silentOptions))
-      .then(() => telegramBot.sendLocation(telegramChatId, longitude, latitude, silentOptions))
-      .then(() => {
-        //console.log('All messages sent successfully.');
-      })
-      .catch(error => {
-        console.error('Error sending messages:', error);
-      });
-  }
-  catch (error) {
-
-  }
-}
 
 function getGoogleMapsLink(message) {
 
@@ -207,7 +162,13 @@ function getGoogleMapsLink(message) {
     }
   }
   catch (error) {
-    return message.embeds[0].description.split("[Google](")[1]
+    try{
+      return message.embeds[0].description.split("[Google](")[1]
+
+    }
+    catch(error){
+      console.log("Test3");
+    }
     //return null;
   }
   //
@@ -232,7 +193,6 @@ async function getCoordinates(coordPogomapperUrl) {
     return coordinates;
   }
   catch (error) {
-    console.error('Error retrieving Google Maps URL:', error);
     return null;
   }
 }
