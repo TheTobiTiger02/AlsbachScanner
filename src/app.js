@@ -2,6 +2,9 @@ const { Client } = require('discord.js-selfbot-v13');
 const TelegramBot = require('node-telegram-bot-api');
 require("dotenv").config();
 const axios = require('axios');
+const request = require('request');
+
+
 
 const discordClient = new Client();
 const telegramBot = new TelegramBot(process.env.telegramToken, { polling: false });
@@ -15,15 +18,15 @@ discordClient.on('ready', async () => {
 
   console.log(`${discordClient.user.username} is ready!`);
 
-  /*const channelId = '1228077883243630654';
-  /*const channelId = '1228077883243630654';
+  const channelId = '1228077883243630654';
   //const messageId = '1230563588989652993'; // PvP
   //const messageId = '1230458800155262997' // Raid
   //const messageId = '1230484717573505064' // 0%
   //const messageId = '1230328806120886375' // Rocket
-  const messageId = '1230941528524980275' // Random
+  //const messageId = '1230953276921610320' // Random
   //const messageId = '1230627297539657828' // Empty
   //const messageId = '1230488059485622343' // WeatherChange
+  const messageId = '1230961140914323628' // Hundo
 
   // Fetch the channel
   const channel = discordClient.channels.cache.get(channelId);
@@ -42,7 +45,7 @@ discordClient.on('ready', async () => {
       console.error('Error fetching message:', error);
     });
 
-    */
+    
     
     
     
@@ -96,7 +99,8 @@ async function sendMessage(telegramChatId, message) {
 
   let longitude, latitude;
   try{
-    const coordinates = await getCoordinates(getGoogleMapsLink(message));
+    const coordinates =  await getCoordinates(getGoogleMapsLink(message));
+    //console.log(coordinates)
     longitude = parseFloat(coordinates[0]);
     latitude = parseFloat(coordinates[1]);
   }
@@ -176,6 +180,7 @@ function getGoogleMapsLink(message) {
     //return null;
   }
   //
+
   return googleMapsLink;
 }
 
@@ -185,6 +190,10 @@ async function getCoordinates(coordPogomapperUrl) {
 
     //console.log(response.toString());
     const coordinates = response.request.path.slice(response.request.path.indexOf('q=') + 2, response.request.path.indexOf('&uc')).split(',');
+
+    
+    
+
 
 
 
@@ -197,6 +206,7 @@ async function getCoordinates(coordPogomapperUrl) {
     return coordinates;
   }
   catch (error) {
+    console.log(error)
     return null;
   }
 }
@@ -228,5 +238,50 @@ discordClient.on('messageCreate', async message => {
 
 
 });
+
+function followRedirectAsync(url, maxRedirects) {
+  return new Promise((resolve, reject) => {
+      request({
+          url: url,
+          followRedirect: true,
+          maxRedirects: maxRedirects
+      }, (error, response, body) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(response);
+          }
+      });
+  });
+}
+
+async function getCoordinatesFromUrl(url) {
+  try {
+      const response = await followRedirectAsync(url, 5); // Follow up to 5 redirects
+      const coordinates = parseCoordinatesFromUrl(response.request.uri.href);
+      if (coordinates) {
+          return coordinates;
+      } else {
+          console.log('Failed to retrieve coordinates.');
+          return null;
+      }
+  } catch (error) {
+      console.error('Error fetching URL:', error);
+      return null;
+  }
+}
+
+function parseCoordinatesFromUrl(url) {
+  const searchParams = new URLSearchParams(new URL(url).search);
+  const queryString = searchParams.get('q');
+  if (queryString) {
+      return queryString.split(',');
+  } else {
+      console.error("'q' parameter not found in URL");
+      return null;
+  }
+}
+
+
 
 discordClient.login(process.env.discordToken);
