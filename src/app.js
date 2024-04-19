@@ -15,14 +15,14 @@ discordClient.on('ready', async () => {
 
   console.log(`${discordClient.user.username} is ready!`);
 
-  const channelId = '1228077883243630654';
+  /*const channelId = '1228077883243630654';
   //const messageId = '1230563588989652993'; // PvP
   //const messageId = '1230458800155262997' // Raid
   //const messageId = '1230484717573505064' // 0%
   //const messageId = '1230328806120886375' // Rocket
-  //const messageId = '1230627579942408212' // Random
+  const messageId = '1230941528524980275' // Random
   //const messageId = '1230627297539657828' // Empty
-  const messageId = '1230488059485622343' // WeatherChange
+  //const messageId = '1230488059485622343' // WeatherChange
 
   // Fetch the channel
   const channel = discordClient.channels.cache.get(channelId);
@@ -40,6 +40,8 @@ discordClient.on('ready', async () => {
     .catch(error => {
       console.error('Error fetching message:', error);
     });
+
+    */
     
     
 
