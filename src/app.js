@@ -15,7 +15,7 @@ discordClient.on('ready', async () => {
 
   console.log(`${discordClient.user.username} is ready!`);
 
-  const channelId = '1228077883243630654';
+  /*const channelId = '1228077883243630654';
   //const messageId = '1230563588989652993'; // PvP
   //const messageId = '1230458800155262997' // Raid
   //const messageId = '1230484717573505064' // 0%
@@ -40,6 +40,7 @@ discordClient.on('ready', async () => {
     .catch(error => {
       console.error('Error fetching message:', error);
     });
+    */
     
     
 
