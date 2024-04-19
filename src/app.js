@@ -43,7 +43,7 @@ discordClient.on('ready', async () => {
     });
 
     */
-    */
+    
     
     
 
