@@ -83,7 +83,6 @@ async function sendMessage(telegramChatId, message) {
 
   }
   catch(error){
-    console.log("Test")
     return;
   }
 
@@ -106,7 +105,6 @@ async function sendMessage(telegramChatId, message) {
     latitude = parseFloat(coordinates[1]);
   }
   catch(error){
-    console.log("Test2");
   }
   
   try{
@@ -173,10 +171,8 @@ function getGoogleMapsLink(message) {
   catch (error) {
     try{
       return message.embeds[0].description.split("[Google](")[1]
-
     }
     catch(error){
-      console.log("Test3");
     }
     //return null;
   }
@@ -207,7 +203,6 @@ async function getCoordinates(coordPogomapperUrl) {
     return coordinates;
   }
   catch (error) {
-    console.log(error)
     return null;
   }
 }
