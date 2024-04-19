@@ -213,7 +213,7 @@ discordClient.on('messageCreate', async message => {
   let telegramChatId;
 
   if (message.channel.id === process.env.discordChannelId) {
-    telegramChatId = process.env.telegramTestId;
+    telegramChatId = process.env.telegramChannelId;
   }
   else if (message.channel.id === process.env.discordBidoofId) {
     telegramChatId = process.env.telegramMyId;
