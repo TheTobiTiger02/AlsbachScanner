@@ -5,7 +5,6 @@ const axios = require('axios');
 const request = require('request');
 
 
-
 const discordClient = new Client();
 const telegramBot = new TelegramBot(process.env.telegramToken, { polling: false });
 
@@ -18,15 +17,17 @@ discordClient.on('ready', async () => {
 
   console.log(`${discordClient.user.username} is ready!`);
 
-  /*const channelId = '1228077883243630654';
-  const messageId = '1230969067695767734'; // PvP
+  
+
+  const channelId = '1228077883243630654';
+  //const messageId = '1230969067695767734'; // PvP
   //const messageId = '1230458800155262997' // Raid
   //const messageId = '1230484717573505064' // 0%
   //const messageId = '1230328806120886375' // Rocket
-  //const messageId = '1230953276921610320' // Random
+  const messageId = '1231403347274240101' // Random
   //const messageId = '1230627297539657828' // Empty
   //const messageId = '1230488059485622343' // WeatherChange
-  //const messageId = '1230961140914323628' // Hundo
+  //const messageId = '1231307119580549140' // Hundo
 
   // Fetch the channel
   const channel = discordClient.channels.cache.get(channelId);
@@ -37,61 +38,63 @@ discordClient.on('ready', async () => {
       //telegramBot.sendMessage("449626954", message.embeds[0].title + '\n\n' + message.embeds[0].description.split('Despawn')[0].replaceAll('**', '') + '\n' + message.embeds[0].fields[1].value.split('<')[0])
       //telegramBot.sendMessage("449626954", message.embeds[0].description);
       //console.log(message.embeds[0].title);
-      console.log(message.embeds[0])
+      //console.log(message.embeds[0])
       sendMessage("449626954", message)
-      
+
     })
     .catch(error => {
       console.error('Error fetching message:', error);
     });
-    */
 
     
-    
-    
-    
-    
+
+
+
+
+
+
+
 
 
 })
 
 async function sendMessage(telegramChatId, message) {
   let messageToSend = "";
-  try{
-  messageToSend = "*" + message.embeds[0].title + "*\n";
-  messageToSend += message.embeds[0].description + "\n\n";
-  messageToSend = messageToSend.split("<:gmaps")[0];
-  
+  try {
+    messageToSend = "*" + message.embeds[0].title + "*\n";
+    messageToSend += message.embeds[0].description + "\n\n";
+    messageToSend = messageToSend.split("<:gmaps")[0];
+
     //messageToSend = messageToSend.replace(/<:TeamHarmony:\d+>/, '');
     messageToSend = messageToSend.replace(/<:[^>]+:\d+>/g, 'Team');
     messageToSend = messageToSend.replace("Team", "");
     messageToSend = messageToSend.replace(/Despawn <t:\d+:R>/, "");
 
 
-    
-    
+
+
     message.embeds[0].fields.forEach(element => {
       //messageToSend += "*" + element.name + "*\n";
       messageToSend += element.value + "\n\n";
     });
     messageToSend = messageToSend
-    .replaceAll(/<:BL\d+:\d+>/g, "") // Remove <:BL\d+:\d+>
-    .replaceAll(/<:stardust:\d+>/g, "Stardust:") // Replace <:stardust:\d+> with "Stardust:"
-    .replaceAll(/<:candies:\d+>/g, "Candies:") // Replace <:candies:\d+> with "Candies:"
-    .replaceAll(/<:XLcandies:\d+>/g, "XL Candies:");
+      .replaceAll(/<:BL\d+:\d+>/g, "") // Remove <:BL\d+:\d+>
+      .replaceAll(/<:stardust:\d+>/g, "Stardust:") // Replace <:stardust:\d+> with "Stardust:"
+      .replaceAll(/<:candies:\d+>/g, "Candies:") // Replace <:candies:\d+> with "Candies:"
+      .replaceAll(/<:XLcandies:\d+>/g, "XL Candies:");
     messageToSend = messageToSend.replaceAll("\n ", "\n");
 
 
   }
-  catch(error){
+  catch (error) {
     return;
   }
 
-  
 
-  
 
-  
+
+
+
   messageToSend = messageToSend.split("<:gmaps")[0];
 
   messageToSend = messageToSend.replaceAll("**", "*");
@@ -99,31 +102,33 @@ async function sendMessage(telegramChatId, message) {
   //console.log(messageToSend);
 
   let longitude, latitude;
-  try{
-    const coordinates =  await getCoordinates(getGoogleMapsLink(message));
-    //console.log(coordinates)
+  try {
+    const coordinates = await getCoordinates(getGoogleMapsLink(message));
+    //console.log(coordinates[0])
     longitude = parseFloat(coordinates[0]);
     latitude = parseFloat(coordinates[1]);
+
+    //console.log(longitude, latitude)
   }
-  catch(error){
+  catch (error) {
   }
-  
-  try{
+
+  try {
     await telegramBot.sendPhoto(telegramChatId, message.embeds[0].image.url)
   }
-  catch(error){
+  catch (error) {
     console.error("Coul not send photo");
   }
-  try{
+  try {
     await telegramBot.sendMessage(telegramChatId, messageToSend, silentOptions)
   }
-  catch(error){
+  catch (error) {
     console.error("Coul not send message");
   }
-  try{
+  try {
     await telegramBot.sendLocation(telegramChatId, longitude, latitude, silentOptions)
   }
-  catch(error){
+  catch (error) {
     console.error("Coul not send location");
   }
   /*try {
@@ -170,10 +175,10 @@ function getGoogleMapsLink(message) {
     }
   }
   catch (error) {
-    try{
+    try {
       return message.embeds[0].description.split("[Google](")[1]
     }
-    catch(error){
+    catch (error) {
     }
     //return null;
   }
@@ -184,13 +189,50 @@ function getGoogleMapsLink(message) {
 
 async function getCoordinates(coordPogomapperUrl) {
   try {
-    const response = await axios.get(coordPogomapperUrl);
+    /*const response = await axios.get(coordPogomapperUrl);
 
-    //console.log(response.toString());
     const coordinates = response.request.path.slice(response.request.path.indexOf('q=') + 2, response.request.path.indexOf('&uc')).split(',');
 
+    console.log(coordinates)
+
+    return coordinates;
+    */
     
-    
+
+    let coordinates;
+    console.log(coordPogomapperUrl)
+    await fetch(coordPogomapperUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(data => {
+        
+        //const coordinatesStartIndex = data.indexOf('q=') + 2;
+        //const coordinatesEndIndex = data.indexOf('&uc', coordinatesStartIndex);
+        //const coordinatesSubstring = data.substring(coordinatesStartIndex, coordinatesEndIndex);
+        const pattern = /-?\d+\.\d+,\s?-?\d+\.\d+/g;
+        const matches = data.match(pattern);
+        
+        //coordinates = data.substring(data.indexOf("3D") + 2, data.indexOf("3D") + 20).split(",")
+        coordinates = filterCoordinates(matches)
+        coordinates = String(coordinates[0]).split(",");
+        
+        
+      })
+      .catch(error => {
+        console.error(response);
+      });
+
+      return coordinates;
+
+      
+
+
+
+
 
 
 
@@ -201,11 +243,27 @@ async function getCoordinates(coordPogomapperUrl) {
 
 
     //const googleMapsUrl = responseString.slice(startIndex + 1, endIndex);
-    return coordinates;
   }
   catch (error) {
     return null;
   }
+}
+
+function filterCoordinates(coords) {
+  const validCoordinates = [];
+
+  coords.forEach(coord => {
+      const [latitude, longitude] = coord.split(",").map(parseFloat);
+      // Define reasonable ranges for latitude and longitude
+      if (
+          latitude >= -90 && latitude <= 90 &&
+          longitude >= -180 && longitude <= 180
+      ) {
+          validCoordinates.push([latitude, longitude]);
+      }
+  });
+
+  return validCoordinates;
 }
 
 
@@ -222,10 +280,10 @@ discordClient.on('messageCreate', async message => {
   else {
     return;
   }
-  try{
+  try {
     sendMessage(telegramChatId, message);
   }
-  catch(error){
+  catch (error) {
     console.error("Could not send messages");
   }
 
@@ -238,33 +296,33 @@ discordClient.on('messageCreate', async message => {
 
 function followRedirectAsync(url, maxRedirects) {
   return new Promise((resolve, reject) => {
-      request({
-          url: url,
-          followRedirect: true,
-          maxRedirects: maxRedirects
-      }, (error, response, body) => {
-          if (error) {
-              reject(error);
-          } else {
-              resolve(response);
-          }
-      });
+    request({
+      url: url,
+      followRedirect: true,
+      maxRedirects: maxRedirects
+    }, (error, response, body) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(response);
+      }
+    });
   });
 }
 
 async function getCoordinatesFromUrl(url) {
   try {
-      const response = await followRedirectAsync(url, 5); // Follow up to 5 redirects
-      const coordinates = parseCoordinatesFromUrl(response.request.uri.href);
-      if (coordinates) {
-          return coordinates;
-      } else {
-          console.log('Failed to retrieve coordinates.');
-          return null;
-      }
-  } catch (error) {
-      console.error('Error fetching URL:', error);
+    const response = await followRedirectAsync(url, 5); // Follow up to 5 redirects
+    const coordinates = parseCoordinatesFromUrl(response.request.uri.href);
+    if (coordinates) {
+      return coordinates;
+    } else {
+      console.log('Failed to retrieve coordinates.');
       return null;
+    }
+  } catch (error) {
+    console.error('Error fetching URL:', error);
+    return null;
   }
 }
 
@@ -272,10 +330,10 @@ function parseCoordinatesFromUrl(url) {
   const searchParams = new URLSearchParams(new URL(url).search);
   const queryString = searchParams.get('q');
   if (queryString) {
-      return queryString.split(',');
+    return queryString.split(',');
   } else {
-      console.error("'q' parameter not found in URL");
-      return null;
+    console.error("'q' parameter not found in URL");
+    return null;
   }
 }
 
