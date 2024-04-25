@@ -19,15 +19,21 @@ discordClient.on('ready', async () => {
 
   
 
+  //testMessage();
+  
+
+})
+
+async function testMessage() {
   const channelId = '1228077883243630654';
   //const messageId = '1230969067695767734'; // PvP
   //const messageId = '1230458800155262997' // Raid
   //const messageId = '1230484717573505064' // 0%
   //const messageId = '1230328806120886375' // Rocket
-  const messageId = '1231403347274240101' // Random
+  const messageId = '1231688456120569857' // Random
   //const messageId = '1230627297539657828' // Empty
   //const messageId = '1230488059485622343' // WeatherChange
-  //const messageId = '1231307119580549140' // Hundo
+  //const messageId = '1231731003631079486' // Hundo
 
   // Fetch the channel
   const channel = discordClient.channels.cache.get(channelId);
@@ -45,18 +51,7 @@ discordClient.on('ready', async () => {
     .catch(error => {
       console.error('Error fetching message:', error);
     });
-
-    
-
-
-
-
-
-
-
-
-
-})
+}
 
 async function sendMessage(telegramChatId, message) {
   let messageToSend = "";
@@ -82,7 +77,9 @@ async function sendMessage(telegramChatId, message) {
       .replaceAll(/<:stardust:\d+>/g, "Stardust:") // Replace <:stardust:\d+> with "Stardust:"
       .replaceAll(/<:candies:\d+>/g, "Candies:") // Replace <:candies:\d+> with "Candies:"
       .replaceAll(/<:XLcandies:\d+>/g, "XL Candies:");
+
     messageToSend = messageToSend.replaceAll("\n ", "\n");
+    messageToSend = messageToSend.replaceAll("\n\n", "\n");
 
 
   }
@@ -112,24 +109,27 @@ async function sendMessage(telegramChatId, message) {
   }
   catch (error) {
   }
+  const currentDate = new Date();
+  const options = { timeZone: 'Europe/Berlin' };
+  const formattedDate = currentDate.toLocaleString('ger', options);
 
   try {
     await telegramBot.sendPhoto(telegramChatId, message.embeds[0].image.url)
   }
   catch (error) {
-    console.error("Coul not send photo");
+    console.error("Coul not send photo " + formattedDate);
   }
   try {
     await telegramBot.sendMessage(telegramChatId, messageToSend, silentOptions)
   }
   catch (error) {
-    console.error("Coul not send message");
+    console.error("Coul not send message " + formattedDate);
   }
   try {
     await telegramBot.sendLocation(telegramChatId, longitude, latitude, silentOptions)
   }
   catch (error) {
-    console.error("Coul not send location");
+    console.error("Coul not send location " + formattedDate);
   }
   /*try {
     telegramBot.sendPhoto(telegramChatId, message.embeds[0].image.url)
@@ -200,7 +200,6 @@ async function getCoordinates(coordPogomapperUrl) {
     
 
     let coordinates;
-    console.log(coordPogomapperUrl)
     await fetch(coordPogomapperUrl)
       .then(response => {
         if (!response.ok) {
@@ -280,11 +279,15 @@ discordClient.on('messageCreate', async message => {
   else {
     return;
   }
+  const currentDate = new Date();
+  const options = { timeZone: 'Europe/Berlin' };
+  const formattedDate = currentDate.toLocaleString('ger', options);
   try {
     sendMessage(telegramChatId, message);
   }
+  
   catch (error) {
-    console.error("Could not send messages");
+    console.error("Could not send messages: " + formattedDate);
   }
 
 
@@ -294,48 +297,7 @@ discordClient.on('messageCreate', async message => {
 
 });
 
-function followRedirectAsync(url, maxRedirects) {
-  return new Promise((resolve, reject) => {
-    request({
-      url: url,
-      followRedirect: true,
-      maxRedirects: maxRedirects
-    }, (error, response, body) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(response);
-      }
-    });
-  });
-}
 
-async function getCoordinatesFromUrl(url) {
-  try {
-    const response = await followRedirectAsync(url, 5); // Follow up to 5 redirects
-    const coordinates = parseCoordinatesFromUrl(response.request.uri.href);
-    if (coordinates) {
-      return coordinates;
-    } else {
-      console.log('Failed to retrieve coordinates.');
-      return null;
-    }
-  } catch (error) {
-    console.error('Error fetching URL:', error);
-    return null;
-  }
-}
-
-function parseCoordinatesFromUrl(url) {
-  const searchParams = new URLSearchParams(new URL(url).search);
-  const queryString = searchParams.get('q');
-  if (queryString) {
-    return queryString.split(',');
-  } else {
-    console.error("'q' parameter not found in URL");
-    return null;
-  }
-}
 
 
 
