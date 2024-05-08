@@ -13,6 +13,10 @@ const silentOptions = {
   disable_notification: true // Set to true for a silent notification
 };
 
+var currentDate = new Date();
+var dateOptions = { timeZone: 'Europe/Berlin' };
+var formattedDate = currentDate.toLocaleString('ger', dateOptions);
+
 discordClient.on('ready', async () => {
 
   console.log(`${discordClient.user.username} is ready!`);
@@ -30,7 +34,7 @@ async function testMessage() {
   //const messageId = '1230458800155262997' // Raid
   //const messageId = '1230484717573505064' // 0%
   //const messageId = '1230328806120886375' // Rocket
-  const messageId = '1231688456120569857' // Random
+  const messageId = '1234166857158885386' // Random
   //const messageId = '1230627297539657828' // Empty
   //const messageId = '1230488059485622343' // WeatherChange
   //const messageId = '1231731003631079486' // Hundo
@@ -109,9 +113,7 @@ async function sendMessage(telegramChatId, message) {
   }
   catch (error) {
   }
-  const currentDate = new Date();
-  const options = { timeZone: 'Europe/Berlin' };
-  const formattedDate = currentDate.toLocaleString('ger', options);
+  
 
   try {
     await telegramBot.sendPhoto(telegramChatId, message.embeds[0].image.url)
@@ -270,6 +272,9 @@ discordClient.on('messageCreate', async message => {
   // Check if the message is from a specific user or in a specific channel
   let telegramChatId;
 
+  currentDate = new Date();
+  formattedDate = currentDate.toLocaleString('ger', dateOptions);
+
   if (message.channel.id === process.env.discordChannelId) {
     telegramChatId = process.env.telegramChannelId;
   }
@@ -279,9 +284,6 @@ discordClient.on('messageCreate', async message => {
   else {
     return;
   }
-  const currentDate = new Date();
-  const options = { timeZone: 'Europe/Berlin' };
-  const formattedDate = currentDate.toLocaleString('ger', options);
   try {
     sendMessage(telegramChatId, message);
   }
